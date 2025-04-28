@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "65c6e427-2d04-412d-8147-53d490739911"
+      }
+    },
+    "owner": "motiveko"
   }
 }
