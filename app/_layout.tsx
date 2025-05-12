@@ -1,8 +1,9 @@
 // app/_layout.tsx
 import React from "react";
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider, createTheme } from "@rneui/themed";
+import { Ionicons } from "@expo/vector-icons";
 
 // React Native Elements 테마 설정 (선택 사항)
 const theme = createTheme({
@@ -22,12 +23,32 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider theme={theme}>
-        {/* Expo Router의 Stack 네비게이터 사용 */}
-        <Stack screenOptions={{ headerShown: false }}>
-          {/* 로그인 페이지와 인증된 앱 페이지 분리 */}
-          <Stack.Screen name="login" />
-          <Stack.Screen name="(app)" />
-        </Stack>
+        <Tabs screenOptions={{ headerShown: false }}>
+          <Tabs.Screen
+            name="(tabs)"
+            options={{
+              title: "Home",
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="home-outline" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="login"
+            options={{
+              title: "Login",
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="log-in-outline" size={size} color={color} />
+              ),
+            }}
+          />
+          {/* +not-found 스크린은 Tabs에 직접 포함시키지 않는 것이 일반적입니다. */}
+          {/* 필요하다면 (tabs) 그룹 내 Stack이나 다른 곳에서 처리합니다. */}
+          <Tabs.Screen
+            name="+not-found"
+            options={{ title: "Oops! Not Found" }}
+          />
+        </Tabs>
       </ThemeProvider>
     </SafeAreaProvider>
   );

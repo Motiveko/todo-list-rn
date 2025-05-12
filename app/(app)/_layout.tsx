@@ -1,20 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { Redirect, Stack, useRouter, useSegments } from "expo-router";
-import { useAuthStore } from "../../store/authStore";
 import { Button } from "@rneui/themed"; // 로그아웃 버튼용
+import useAuthStore from "@/store/authStore";
 
 export default function AppLayout() {
-  const { user, isLoading, initializeAuth, signOut } = useAuthStore();
+  const { user, isLoading, actions } = useAuthStore();
   const segments = useSegments(); // 현재 라우트 경로 파악
   const router = useRouter();
-
-  useEffect(() => {
-    // 앱 레이아웃 로드 시 사용자 정보가 없으면 초기화 시도
-    if (!user && !isLoading) {
-      initializeAuth();
-    }
-  }, []); // 마운트 시 한 번만 실행
 
   // 초기 로딩 중일 때
   if (isLoading) {
@@ -49,7 +42,7 @@ export default function AppLayout() {
           headerRight: () => (
             <Button
               title="로그아웃"
-              onPress={signOut}
+              onPress={actions.logout}
               type="clear"
               titleStyle={{ color: "#3498db" }}
             />

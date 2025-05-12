@@ -1,56 +1,57 @@
-// app/login.tsx
-import React, { useEffect } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
-import { Button, Text } from "@rneui/themed";
-import { useAuthStore } from "../store/authStore";
-import { Redirect, useRouter } from "expo-router";
+import React from "react";
+import {
+  View,
+  Button,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import {
+  useAuthUser,
+  useAuthIsLoading,
+  useAuthError,
+} from "../store/authStore"; // Zustand 상태 가져오기
+import useGoogleAuthentication from "../hooks/useGoogleAuthentication"; // 위에서 만든 훅 임포트
+import { Link, Redirect } from "expo-router"; // expo-router 사용 시
 
-export default function LoginScreen() {
+const LoginScreen = () => {
+  const user = useAuthUser();
+  const isLoading = useAuthIsLoading(); // Google 로그인 + 백엔드 통신 로딩 상태
+  const authError = useAuthError();
   const {
-    signInWithGoogle,
-    isLoading,
-    error,
-    user,
-    googleRequest,
-    initializeAuth,
-  } = useAuthStore();
-  const router = useRouter();
+    signIn,
+    isLoading: isGoogleLoading,
+    error: googleError,
+  } = useGoogleAuthentication(); // Google 로그인 훅 사용
 
-  // 컴포넌트 마운트 시 Google Auth Request 초기화 확인/실행
-  useEffect(() => {
-    if (!googleRequest) {
-      initializeAuth();
-    }
-  }, [googleRequest, initializeAuth]);
+  // Zustand의 isLoading은 백엔드 통신 포함, isGoogleLoading은 Google 로그인 창 띄우는 과정의 로딩일 수 있음.
+  // 필요에 따라 로딩 상태를 통합하거나 분리하여 사용
+  const combinedLoading = isLoading || isGoogleLoading;
+  const combinedError = authError || googleError;
 
-  // 로그인 성공 시 (app) 그룹의 메인 페이지로 이동
+  // 이미 로그인 되어 있다면 홈 화면 등으로 리디렉션 (expo-router 예시)
   if (user) {
-    return <Redirect href="/(app)" />;
+    return <Redirect href="/(app)/main" />; // 예시 경로
   }
 
   return (
     <View style={styles.container}>
-      <Text h2 style={styles.title}>
-        Todo App 로그인
-      </Text>
-      {isLoading && <ActivityIndicator size="large" color="#3498db" />}
-      {error && <Text style={styles.errorText}>{error}</Text>}
-      <Button
-        title="Google 계정으로 로그인"
-        icon={{ name: "google", type: "font-awesome", color: "white" }}
-        onPress={signInWithGoogle}
-        disabled={isLoading || !googleRequest} // 로딩 중이거나 request 준비 안됐으면 비활성화
-        loading={isLoading}
-        buttonStyle={styles.button}
-      />
-      {!googleRequest && !isLoading && (
-        <Text style={styles.errorText}>
-          로그인 설정을 로드 중입니다. 잠시 후 다시 시도해주세요.
-        </Text>
+      <Text style={styles.title}>로그인</Text>
+
+      {combinedLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Button
+          title="Google 계정으로 로그인"
+          onPress={signIn}
+          disabled={!signIn} // signIn 함수 준비 안됐을 때 비활성화
+        />
       )}
+
+      {combinedError && <Text style={styles.errorText}>{combinedError}</Text>}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -58,22 +59,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#f5f5f5",
   },
   title: {
-    marginBottom: 40,
-    color: "#333",
-  },
-  button: {
-    backgroundColor: "#4285F4", // Google Blue
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    minWidth: 250,
+    fontSize: 24,
+    marginBottom: 20,
   },
   errorText: {
-    color: "red",
     marginTop: 15,
+    color: "red",
     textAlign: "center",
   },
 });
+
+export default LoginScreen;

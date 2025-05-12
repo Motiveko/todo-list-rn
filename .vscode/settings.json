@@ -2,7 +2,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "cSpell.words": [
-    "Pressable"
-  ]
+  "cSpell.words": ["Pressable"],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
