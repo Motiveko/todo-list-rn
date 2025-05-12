@@ -1,34 +1,29 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import Constants from "expo-constants"; // app.config 읽기
-import { Platform } from "react-native";
 import {
   useAuthActions,
   useAuthIsLoading,
   useAuthError,
 } from "@/store/authStore"; // Zustand 액션 임포트
+import { Config } from "@/config/env";
 
 // Expo Go 또는 웹 환경에서 웹 브라우저를 사용하여 인증 결과를 앱으로 리디렉션 가능하게 함
 WebBrowser.maybeCompleteAuthSession();
 
 const useGoogleAuthentication = () => {
   const { loginSuccess, setLoading, setError } = useAuthActions();
-  const androidClientId = process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID;
-  const webClientId = process.env.EXPO_PUBLIC_WEB_CLIENT_ID;
   // const iosClientId = Constants.expoConfig?.extra?.googleClientIdIos; // iOS 구현 시
 
   // 플랫폼에 맞는 클라이언트 ID 선택
   // Expo Go에서는 webClientId를 사용하는 경우가 많음
   // 독립 실행형 Android 앱에서는 androidClientId 사용
   // 실제 빌드 환경 및 테스트 환경에 따라 조정 필요
-  const clientId = Platform.OS === "android" ? androidClientId : webClientId;
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     // expoClientId: webClientId, // Expo Go / Web 에서 사용
-    androidClientId,
-    // iosClientId: iosClientId, // iOS 구현 시
-    // webClientId: webClientId, // 웹 플랫폼 지원 시
+    androidClientId: Config.googleAndroidClientId,
+    webClientId: Config.googleWebClientId,
     scopes: ["profile", "email"], // 필요한 정보 범위 요청
     // selectAccount: true, // 항상 계정 선택 화면 표시 (선택 사항)
   });
@@ -38,16 +33,13 @@ const useGoogleAuthentication = () => {
       setLoading(true);
       setError(null);
       try {
-        const backendResponse = await fetch(
-          "https://motiveko.mooo.com/api/v1/auth/google/app",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token, clientId }), // Google ID Token 전송
-          }
-        );
+        const backendResponse = await fetch(Config.apiHost, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token, clientId: Config.googleClientId }), // Google ID Token 전송
+        });
 
         if (!backendResponse.ok) {
           // 서버 응답 에러 처리 (4xx, 5xx)
