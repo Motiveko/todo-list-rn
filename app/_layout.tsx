@@ -52,9 +52,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider theme={theme}>
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(app)/todos" options={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }}>
           {/* <Stack.Screen name="modal" options={{ presentation: "modal" }} /> */}
         </Stack>
       </ThemeProvider>
