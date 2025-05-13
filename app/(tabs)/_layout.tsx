@@ -18,7 +18,6 @@ export default function AppLayout() {
     return <Redirect href="/login" />;
   }
 
-  // 사용자가 있으면 앱 내부 페이지 렌더링
   return (
     <Tabs
       screenOptions={{
@@ -32,28 +31,27 @@ export default function AppLayout() {
       }}
     >
       <Tabs.Screen
-        name="index" // app/(app)/index.tsx 파일을 가리킴
+        name="todo"
         options={{
-          title: "List",
+          title: "Todo",
           tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="list" color={color} />
+            <Ionicons size={28} name="checkbox" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="new" // app/(app)/todos 폴더 (및 그 안의 _layout.tsx)를 가리킴
+        name="index"
         options={{
-          title: "New",
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="add" color={color} />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
-        name="screens/[id]" // app/(app)/todos 폴더 (및 그 안의 _layout.tsx)를 가리킴
+        name="settings/index" // TODO : 이거 왜 /index를 넣어줘야하는지 모르겠음
         options={{
-          headerShown: false,
-          href: null, // 탭 사라지게 해준다.
+          title: "Setting",
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={28} name="settings" color={color} />
+          ),
         }}
       />
     </Tabs>

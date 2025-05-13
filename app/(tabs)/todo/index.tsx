@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useAuthUser } from "@/store/authStore";
+import { Link } from "expo-router";
 
 export default function TodoListPage() {
   const user = useAuthUser();
@@ -11,6 +12,9 @@ export default function TodoListPage() {
   return (
     <View style={styles.container}>
       <Text>{user.email} Todo List Page</Text>
+      <Link href="/todo/1">
+        <Text>Todo 1</Text>
+      </Link>
     </View>
   );
 }
