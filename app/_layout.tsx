@@ -23,10 +23,6 @@ export default function RootLayout() {
   const segments = useSegments();
   const { isLoading } = useGoogleAuthentication();
 
-  if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
   useEffect(() => {
     if (isLoading) return;
 
