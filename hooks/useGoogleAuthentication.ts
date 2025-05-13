@@ -11,6 +11,7 @@ import { Config } from "@/config/env";
 // Expo Go 또는 웹 환경에서 웹 브라우저를 사용하여 인증 결과를 앱으로 리디렉션 가능하게 함
 WebBrowser.maybeCompleteAuthSession();
 
+// TODO : 그냥 일반 훅으로 합친다.
 const useGoogleAuthentication = () => {
   const { loginSuccess, setLoading, setError } = useAuthActions();
   // const iosClientId = Constants.expoConfig?.extra?.googleClientIdIos; // iOS 구현 시
