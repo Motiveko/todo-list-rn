@@ -1,4 +1,5 @@
 // app/_layout.tsx
+import "../global.css";
 import React, { useEffect } from "react";
 import { SplashScreen, Stack, Tabs, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
