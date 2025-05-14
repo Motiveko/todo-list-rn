@@ -4,6 +4,7 @@ import { Redirect, Stack, Tabs, useRouter, useSegments } from "expo-router";
 import { Button } from "@rneui/themed"; // 로그아웃 버튼용
 import useAuthStore from "@/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
+import { commonHeaderOptions } from "@/styles";
 
 export default function AppLayout() {
   const { user, isLoading, actions } = useAuthStore();
@@ -21,6 +22,7 @@ export default function AppLayout() {
   return (
     <Tabs
       screenOptions={{
+        ...commonHeaderOptions,
         headerRight: () => (
           <Button
             title="Logout"
@@ -29,20 +31,18 @@ export default function AppLayout() {
           />
         ),
       }}
+      // https://reactnavigation.org/docs/bottom-tab-navigator#backbehavior
+      // 뒤로가기 동작이 stack처럼 동작하게 하기 위해서는 옵션 추가가 필요함.
+      backBehavior="order"
     >
       <Tabs.Screen
         name="todo"
         options={{
           title: "Todo",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="checkbox" color={color} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          href: null,
         }}
       />
       <Tabs.Screen
@@ -52,6 +52,12 @@ export default function AppLayout() {
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="settings" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
