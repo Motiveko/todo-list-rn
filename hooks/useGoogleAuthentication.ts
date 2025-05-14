@@ -7,6 +7,7 @@ import {
   useAuthError,
 } from "@/store/authStore"; // Zustand 액션 임포트
 import { Config } from "@/config/env";
+import { API } from "@/apis";
 
 // Expo Go 또는 웹 환경에서 웹 브라우저를 사용하여 인증 결과를 앱으로 리디렉션 가능하게 함
 WebBrowser.maybeCompleteAuthSession();
@@ -34,27 +35,13 @@ const useGoogleAuthentication = () => {
       setLoading(true);
       setError(null);
       try {
-        const backendResponse = await fetch(Config.apiHost, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token, clientId: Config.googleClientId }), // Google ID Token 전송
+        const response = await API.user.login({
+          token,
+          clientId: Config.googleClientId,
         });
 
-        if (!backendResponse.ok) {
-          // 서버 응답 에러 처리 (4xx, 5xx)
-          const errorData = await backendResponse.json().catch(() => ({})); // JSON 파싱 실패 대비
-          console.error("Backend Error:", backendResponse.status, errorData);
-          throw new Error(
-            errorData.message || `서버 통신 오류 (${backendResponse.status})`
-          );
-        }
-
-        const data = await backendResponse.json();
-
-        if (data.accessToken) {
-          loginSuccess(data.accessToken); // Zustand 스토어 업데이트
+        if (response.accessToken) {
+          loginSuccess(response.accessToken); // Zustand 스토어 업데이트
         } else {
           throw new Error("서버 응답에 accessToken이 없습니다.");
         }

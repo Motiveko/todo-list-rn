@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // JWT 영구 저장을 위해 필요
 import { jwtDecode } from "jwt-decode"; // JWT 디코딩 라이브러리
+import { API } from "@/apis";
 
 interface User {
   id: number;
@@ -48,6 +49,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
         };
         set({ user: userData, jwt: token, isLoading: false, error: null });
         AsyncStorage.setItem("jwt", token); // AsyncStorage에 JWT 저장
+        console.log("JWT TOKEN : ", token);
       } catch (e) {
         console.error("Failed to decode JWT or set auth state:", e);
         set({ isLoading: false, error: "로그인 처리 중 오류가 발생했습니다." });
@@ -57,12 +59,13 @@ const useAuthStore = create<AuthState>((set, get) => ({
     logout: async () => {
       set({ user: null, jwt: null, isLoading: false, error: null });
       await AsyncStorage.removeItem("jwt");
-      // TODO : 서버 요청 추가
+      await API.user.logout();
     },
     hydrate: async () => {
       try {
         const token = await AsyncStorage.getItem("jwt");
         if (token) {
+          console.log("JWT TOKEN : ", token);
           // 토큰 유효성 검사 (만료 등) 로직 추가 가능
           get().actions.loginSuccess(token); // 저장된 토큰으로 로그인 상태 복원
         } else {
