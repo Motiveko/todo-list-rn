@@ -10,16 +10,7 @@ export default function CommonHeader({
   logout?: () => void;
 }) {
   return (
-    <View
-      style={{
-        height: 56,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-        paddingHorizontal: 16,
-        backgroundColor: "teal",
-      }}
-    >
+    <View className="h-16 flex justify-between items-center flex-row px-4 bg-teal-700">
       <Text style={{ color: "white" }}>{title}</Text>
       <Button
         title="Logout"
