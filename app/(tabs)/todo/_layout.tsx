@@ -21,7 +21,7 @@ export default function TodoLayout() {
     >
       <Stack.Screen name="index" options={{ title: "Todo List" }} />
       <Stack.Screen name="new" />
-      <Stack.Screen name="[id]/index " options={{ title: "Todo Detail" }} />
+      <Stack.Screen name="[id]/index" options={{ title: "Todo Detail" }} />
     </Stack>
   );
 }
