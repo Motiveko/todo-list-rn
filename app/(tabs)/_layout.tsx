@@ -1,10 +1,9 @@
 import React from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { Redirect, Stack, Tabs, useRouter, useSegments } from "expo-router";
-import { Button } from "@rneui/themed"; // 로그아웃 버튼용
+import { StyleSheet } from "react-native";
+import { Redirect, Tabs, useRouter, useSegments } from "expo-router";
 import useAuthStore from "@/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
-import { commonHeaderOptions } from "@/styles";
+import CommonHeader from "@/components/header";
 
 export default function AppLayout() {
   const { user, isLoading, actions } = useAuthStore();
@@ -22,13 +21,8 @@ export default function AppLayout() {
   return (
     <Tabs
       screenOptions={{
-        ...commonHeaderOptions,
-        headerRight: () => (
-          <Button
-            title="Logout"
-            onPress={actions.logout}
-            buttonStyle={{ backgroundColor: "red" }}
-          />
+        header: (props) => (
+          <CommonHeader title={props.options.title} logout={actions.logout} />
         ),
       }}
       // https://reactnavigation.org/docs/bottom-tab-navigator#backbehavior

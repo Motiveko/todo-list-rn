@@ -1,21 +1,15 @@
 import { Stack } from "expo-router";
-import { Button } from "@rneui/themed";
 import useAuthStore from "@/store/authStore";
-import { commonHeaderOptions } from "@/styles";
+import CommonHeader from "@/components/header";
 
 export default function TodoLayout() {
   const { actions } = useAuthStore();
   return (
     <Stack
       screenOptions={{
-        ...commonHeaderOptions,
         headerTitleAlign: "center",
-        headerRight: () => (
-          <Button
-            title="Logout"
-            onPress={actions.logout}
-            buttonStyle={{ backgroundColor: "red" }}
-          />
+        header: (props) => (
+          <CommonHeader title={props.options.title} logout={actions.logout} />
         ),
       }}
     >
