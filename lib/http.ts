@@ -3,6 +3,7 @@ import type {
   AxiosRequestConfig,
   AxiosResponse,
   AxiosError as AxiosLibError,
+  InternalAxiosRequestConfig,
 } from "axios";
 import axios from "axios";
 import type { z, ZodTypeAny } from "zod";
@@ -71,6 +72,32 @@ export const addErrorResponseInterceptor = (
  */
 export const removeErrorResponseInterceptor = (interceptorId: number): void => {
   responseInterceptorManager.eject(interceptorId);
+};
+
+// 요청 인터셉터 관리
+const requestInterceptorManager = axiosInstance.interceptors.request;
+
+/**
+ * 요청 인터셉터를 동적으로 추가합니다.
+ * @param onFulfilled 요청 성공 시 실행될 콜백 함수
+ * @param onRejected 요청 에러 시 실행될 콜백 함수 (선택 사항)
+ * @returns 추가된 인터셉터의 ID
+ */
+export const addRequestInterceptor = (
+  onFulfilled: (
+    config: InternalAxiosRequestConfig
+  ) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>,
+  onRejected?: (error: any) => any
+): number => {
+  return requestInterceptorManager.use(onFulfilled, onRejected);
+};
+
+/**
+ * ID를 사용하여 요청 인터셉터를 제거합니다.
+ * @param interceptorId 제거할 인터셉터의 ID
+ */
+export const removeRequestInterceptor = (interceptorId: number): void => {
+  requestInterceptorManager.eject(interceptorId);
 };
 
 /**
