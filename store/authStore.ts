@@ -85,6 +85,8 @@ useAuthStore.getState().actions.hydrate();
 // 커스텀 훅으로 액션 쉽게 사용하기 (선택 사항)
 export const useAuthActions = () => useAuthStore((state) => state.actions);
 export const useAuthUser = () => useAuthStore((state) => state.user);
+export const useAuthenticatedUser = () =>
+  useAuthStore((state) => state.user) as User;
 export const useAuthJwt = () => useAuthStore((state) => state.jwt);
 export const useAuthIsLoading = () => useAuthStore((state) => state.isLoading);
 export const useAuthError = () => useAuthStore((state) => state.error);
