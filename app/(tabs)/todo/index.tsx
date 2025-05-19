@@ -1,37 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
-import { useAuthenticatedUser, useAuthUser } from "@/store/authStore";
+import { useAuthenticatedUser } from "@/store/authStore";
 import { Link } from "expo-router";
 import { ListItem, CheckBox, Button, Icon } from "@rneui/themed";
-import { API } from "@/apis";
-import { Todo } from "@/apis/todo";
 import Toast from "react-native-toast-message";
+import {
+  Todo,
+  useTodoActions,
+  useTodoIsLoading,
+  useTodoTodos,
+} from "@/store/todoStore";
 
 export default function TodoListPage() {
   const user = useAuthenticatedUser();
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchTodos = async () => {
-    try {
-      setLoading(true);
-      const response = await API.todo.list();
-      setTodos(response);
-    } catch (e: any) {
-      Toast.show({
-        text1: e.message || "Failed to fetch todos",
-        type: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const todos = useTodoTodos();
+  const isLoading = useTodoIsLoading();
+  const { fetchTodos, toggleDone, deleteTodo } = useTodoActions();
 
   useEffect(() => {
     fetchTodos();
   }, [user]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View className="flex">
         <ActivityIndicator size="large" />
@@ -39,18 +29,8 @@ export default function TodoListPage() {
     );
   }
 
-  const handleToggleDone = (id: number) => {
-    // TODO : 실제기능구현
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
-      )
-    );
-  };
-
   const handleDeleteTodo = (id: number) => {
-    // TODO : 실제기능구현
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    deleteTodo(id);
     Toast.show({
       text1: `Delete todo: ${id}`,
       type: "success",
@@ -58,13 +38,16 @@ export default function TodoListPage() {
   };
 
   const renderItem = ({ item }: { item: Todo }) => (
-    <ListItem bottomDivider className="bg-white my-1 rounded-lg shadow">
+    <ListItem
+      bottomDivider
+      className="flex justify-center bg-white my-1 rounded-lg shadow"
+    >
       <CheckBox
         checked={item.isDone}
-        onPress={() => handleToggleDone(item.id)}
+        onPress={() => toggleDone(item.id)}
         className="p-0 m-0"
       />
-      <Link href={`/todo/${item.id}`}>
+      <Link className="flex-1" href={`/todo/${item.id}`}>
         <ListItem.Content>
           <ListItem.Title className="font-bold text-lg">
             {item.title}
@@ -98,6 +81,8 @@ export default function TodoListPage() {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           className="w-full"
+          onRefresh={fetchTodos}
+          refreshing={isLoading}
         />
       )}
     </View>

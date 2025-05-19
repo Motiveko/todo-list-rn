@@ -1,18 +1,8 @@
 import { z } from "zod";
 import httpClient from "@/lib/http";
 import { DataAndMessageResponse } from "@/apis";
+import { CreateTodoDto, Todo } from "@/store/todoStore";
 
-export interface Todo {
-  id: number;
-  title: string;
-  description: string;
-  isDone: boolean;
-  createdAt: Date;
-}
-export interface CreateTodoDto {
-  title: string;
-  description: string;
-}
 const TodoSchema: z.ZodType<Todo> = z.object({
   id: z.number(),
   title: z.string(),
@@ -52,6 +42,10 @@ export const create = async (body: CreateTodoDto) => {
     }
   );
   return response.data;
+};
+
+export const toggleDone = async (id: number) => {
+  await httpClient.post(`/api/v1/todo/${id}/toggle`);
 };
 
 const _delete = async (id: number) => {
