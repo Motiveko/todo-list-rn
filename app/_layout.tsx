@@ -8,6 +8,7 @@ import { ActivityIndicator, View } from "react-native";
 import { useAuthJwt, useAuthUser } from "@/store/authStore";
 import useGoogleAuthentication from "@/hooks/useGoogleAuthentication";
 import { configHttpClientAuthentication } from "@/config/app";
+import ToastDisplay from "@/components/ToastDisplay";
 
 // React Native Elements 테마 설정 (선택 사항)
 const theme = createTheme({
@@ -62,6 +63,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           {/* <Stack.Screen name="modal" options={{ presentation: "modal" }} /> */}
         </Stack>
+        <ToastDisplay />
       </ThemeProvider>
     </SafeAreaProvider>
   );
