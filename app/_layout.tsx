@@ -5,8 +5,10 @@ import { SplashScreen, Stack, Tabs, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { ActivityIndicator, View } from "react-native";
-import { useAuthUser } from "@/store/authStore";
+import { useAuthJwt, useAuthUser } from "@/store/authStore";
 import useGoogleAuthentication from "@/hooks/useGoogleAuthentication";
+import { configHttpClientAuthentication } from "@/config/app";
+
 // React Native Elements 테마 설정 (선택 사항)
 const theme = createTheme({
   lightColors: {
@@ -21,9 +23,13 @@ const theme = createTheme({
 export default function RootLayout() {
   const router = useRouter();
   const user = useAuthUser();
+  const jwt = useAuthJwt();
   const segments = useSegments();
   const { isLoading } = useGoogleAuthentication();
 
+  useEffect(() => {
+    configHttpClientAuthentication(jwt);
+  }, [jwt]);
   useEffect(() => {
     if (isLoading) return;
 
